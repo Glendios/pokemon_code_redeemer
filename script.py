@@ -1,12 +1,13 @@
 import fitz #pymupdf
 import os
 import sys
+from textenterer import click_paste_10
 
 def txtParser(name):
     codelist = []
     try:
         with open(name, 'r', encoding='utf-8') as file:
-            text = file.read()
+            text = file.read() 
         text = text.replace('-','')
         delimited_text = text.replace('\n', ' ').split()
         print(text)
@@ -19,6 +20,7 @@ def txtParser(name):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         print(f"Failed to open file.")
+    return codelist
     #pass
 
 def pdfParser(name):
@@ -41,6 +43,7 @@ def pdfParser(name):
         print(f"An unexpected error occurred: {e}")
         print(f"Failed to open file.")
     print(codelist)
+    return codelist
     #pass
 
 def directCodes(manual_list):
@@ -54,6 +57,7 @@ def directCodes(manual_list):
         if len(line) > 12:
             if len(line) < 17:
                 codelist.append(line)
+    return codelist
     pass
 
 
@@ -70,16 +74,19 @@ else:
     print(full_path)
     if pdf_name.endswith(".txt"):
         if os.path.isfile(full_path):
-            txtParser(full_path)
+            codelist = txtParser(full_path)
         else:
             print("File not found")
         pass
     elif pdf_name.endswith(".pdf"):
         #if os.path.isfile(full_path):
         if os.path.isfile(full_path):
-            pdfParser(full_path)
+            codelist = pdfParser(full_path)
         else:
             print("File not found")
         pass
     else:
-        directCodes(pdf_name)
+        codelist = directCodes(pdf_name)
+start_index_str = input("Enter which code to start at (integer) or nothing if 0: ").strip()
+start_index = int(start_index_str) if start_index_str else 0
+click_paste_10(codelist, 10, start_index)
